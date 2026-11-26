@@ -1,0 +1,30 @@
+# Dependencias
+/node_modules
+
+# Next.js
+/.next/
+/.next-check/
+/out/
+next-env.d.ts
+*.tsbuildinfo
+
+# Secretos: nunca al repositorio (docs/engineering.md §1.5)
+.env
+.env.local
+.env.*.local
+
+# Sistema y editores
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Pruebas
+/coverage
+
+# Registros
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*

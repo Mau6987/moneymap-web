@@ -1,0 +1,11 @@
+.next
+.next-check
+node_modules
+pnpm-lock.yaml
+src/lib/api/generated
+
+# Los espejos se rigen por su propia regla: tienen que ser idénticos en los tres
+# repos (tool/check-mirrors.sh). Si Prettier los reformateara, cualquier subida
+# de versión rompería el espejo, porque la app y el backend no usan Prettier.
+docs/constitution.md
+docs/engineering.md

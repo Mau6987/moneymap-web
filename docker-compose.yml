@@ -1,0 +1,20 @@
+# La web en un contenedor. El puerto se publica solo en 127.0.0.1.
+#
+#   Contra la API del back en Docker: docker compose up -d --build
+#   Modo demo (sin backend):          DEMO=true docker compose up -d --build
+#
+# La API se alcanza desde el contenedor por host.docker.internal: el compose
+# del back la publica en localhost:8000.
+
+services:
+  web:
+    build: .
+    restart: unless-stopped
+    environment:
+      API_BASE_URL: ${API_BASE_URL:-http://host.docker.internal:8000}
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+      DEMO: ${DEMO:-false}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "127.0.0.1:${WEB_PORT:-3000}:3000"

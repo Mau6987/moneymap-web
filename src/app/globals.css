@@ -1,0 +1,182 @@
+@import "tailwindcss";
+
+/* `dark:` sigue al tema de MoneyMap, no solo al del sistema. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/*
+ * Tema Liquid Glass, tomado de los mockups ("MoneyMap · Liquid Glass", páginas Web).
+ * Colores planos: un principal y tres acentos con significado. Cada acento tiene
+ * su versión para texto, que pasa contraste AA sobre su fondo suave.
+ *
+ * Los tokens viven en variables para redefinirlos en el tema oscuro, que los
+ * mockups no dibujan: se mantiene el tono y se ajusta la luminosidad para AA.
+ */
+:root {
+  color-scheme: light;
+  --mm-bg: #eef0f3;
+  --mm-ink: #151936;
+  --mm-ink-2: #3a4066;
+  --mm-muted: #555b7e;
+  --mm-faint: #8a8fb0;
+  --mm-field: #f4f5f8;
+  --mm-line: rgb(21 25 54 / 0.08);
+  --mm-glass: rgb(255 255 255 / 0.8);
+  --mm-glass-border: rgb(255 255 255 / 0.82);
+  --mm-glass-hi: #fff;
+  --mm-well: rgb(21 25 54 / 0.045);
+  --mm-primary: #3e4bd2;
+  --mm-primary-text: #3e4bd2;
+  --mm-primary-soft: rgb(62 75 210 / 0.12);
+  --mm-green: #2e8a62;
+  --mm-green-text: #22714f;
+  --mm-green-soft: rgb(46 138 98 / 0.14);
+  --mm-coral: #d25a42;
+  --mm-coral-text: #c8492f;
+  --mm-coral-soft: rgb(210 90 66 / 0.14);
+  --mm-amber: #e2a93c;
+  --mm-amber-text: #9a6a0c;
+  --mm-amber-soft: rgb(226 169 60 / 0.18);
+  /* Lo programado que ya venció (cuentas por pagar): un aviso, no un movimiento. */
+  --mm-orange: #e8711c;
+  --mm-orange-text: #a8500c;
+  --mm-orange-soft: rgb(232 113 28 / 0.15);
+  --mm-shadow: 0 1px 2px rgb(21 25 54 / 0.06), 0 10px 24px -12px rgb(21 25 54 / 0.18);
+}
+
+/*
+ * El tema oscuro va por `data-theme` en <html>: lo pone el script del layout
+ * raíz con el tema elegido en Ajustes o, si es "Sistema", con el del sistema.
+ */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --mm-bg: #0d1022;
+  --mm-ink: #eef0fa;
+  --mm-ink-2: #c9cce4;
+  --mm-muted: #a3a8c8;
+  --mm-faint: #7a7fa3;
+  --mm-field: rgb(255 255 255 / 0.06);
+  --mm-line: rgb(255 255 255 / 0.09);
+  --mm-glass: rgb(30 35 70 / 0.62);
+  --mm-glass-border: rgb(255 255 255 / 0.1);
+  --mm-glass-hi: rgb(255 255 255 / 0.12);
+  --mm-well: rgb(255 255 255 / 0.05);
+  --mm-primary-text: #a4abff;
+  --mm-primary-soft: rgb(124 134 255 / 0.18);
+  --mm-green-text: #6fd3a5;
+  --mm-green-soft: rgb(46 138 98 / 0.24);
+  --mm-coral-text: #f59a85;
+  --mm-coral-soft: rgb(210 90 66 / 0.24);
+  --mm-amber-text: #f0c46d;
+  --mm-amber-soft: rgb(226 169 60 / 0.22);
+  --mm-orange-text: #ffa766;
+  --mm-orange-soft: rgb(232 113 28 / 0.24);
+  --mm-shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 14px 30px -14px rgb(0 0 0 / 0.6);
+}
+
+/* Cortes de los mockups: teléfono hasta 760 px, tablet hasta 1100 px. */
+@theme {
+  --breakpoint-md: 47.5rem;
+  --breakpoint-xl: 68.75rem;
+}
+
+@theme inline {
+  --font-sans: var(--font-manrope), system-ui, sans-serif;
+  --color-bg: var(--mm-bg);
+  --color-ink: var(--mm-ink);
+  --color-ink-2: var(--mm-ink-2);
+  --color-muted: var(--mm-muted);
+  --color-faint: var(--mm-faint);
+  --color-field: var(--mm-field);
+  --color-line: var(--mm-line);
+  --color-well: var(--mm-well);
+  --color-primary: var(--mm-primary);
+  --color-primary-text: var(--mm-primary-text);
+  --color-primary-soft: var(--mm-primary-soft);
+  --color-green: var(--mm-green);
+  --color-green-text: var(--mm-green-text);
+  --color-green-soft: var(--mm-green-soft);
+  --color-coral: var(--mm-coral);
+  --color-coral-text: var(--mm-coral-text);
+  --color-coral-soft: var(--mm-coral-soft);
+  --color-amber: var(--mm-amber);
+  --color-amber-text: var(--mm-amber-text);
+  --color-amber-soft: var(--mm-amber-soft);
+  --color-orange: var(--mm-orange);
+  --color-orange-text: var(--mm-orange-text);
+  --color-orange-soft: var(--mm-orange-soft);
+}
+
+@layer components {
+  /* Vidrio: la superficie de tarjetas, menús y formularios. */
+  .glass {
+    background: var(--mm-glass);
+    backdrop-filter: blur(26px) saturate(185%);
+    -webkit-backdrop-filter: blur(26px) saturate(185%);
+    border: 1px solid var(--mm-glass-border);
+    box-shadow:
+      inset 0 1px 0 var(--mm-glass-hi),
+      var(--mm-shadow);
+  }
+
+  .num {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+
+  .focus-ring {
+    @apply focus-visible:outline-primary-text outline-offset-2 focus-visible:outline-2;
+  }
+}
+
+body {
+  background: var(--mm-bg);
+  color: var(--mm-ink);
+}
+
+/* BUG-043 y BUG-044: la lista de un <select> la dibuja el sistema (en Windows,
+   sobre blanco) pero hereda el texto claro del tema oscuro. Cada opción lleva
+   el fondo y el texto del tema para que se lea en los dos. */
+select option,
+select optgroup {
+  background-color: var(--mm-bg);
+  color: var(--mm-ink);
+}
+
+/* What If?: cada slider se ve como una barra del Money Flow del Map; la parte
+   pintada llega hasta el control (--fill) en el color de su tipo (--tone). */
+.whatif-slider {
+  appearance: none;
+  width: 100%;
+  min-width: 0;
+  height: 2rem;
+  background: transparent;
+  cursor: pointer;
+}
+.whatif-slider::-webkit-slider-runnable-track {
+  height: 0.625rem;
+  border-radius: 9999px;
+  background: linear-gradient(to right, var(--tone) var(--fill), var(--mm-well) var(--fill));
+}
+.whatif-slider::-moz-range-track {
+  height: 0.625rem;
+  border-radius: 9999px;
+  background: linear-gradient(to right, var(--tone) var(--fill), var(--mm-well) var(--fill));
+}
+.whatif-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-top: -0.3125rem;
+  border: 3px solid var(--tone);
+  border-radius: 9999px;
+  background: var(--mm-bg);
+  box-shadow: var(--mm-shadow);
+}
+.whatif-slider::-moz-range-thumb {
+  width: 0.875rem;
+  height: 0.875rem;
+  border: 3px solid var(--tone);
+  border-radius: 9999px;
+  background: var(--mm-bg);
+  box-shadow: var(--mm-shadow);
+}

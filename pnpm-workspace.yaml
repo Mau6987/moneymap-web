@@ -1,0 +1,16 @@
+# Opciones de pnpm. Desde la versión 10, pnpm ya no lee el campo "pnpm" de
+# package.json: cada opción vive acá (https://pnpm.io/settings).
+#
+# pnpm no ejecuta los scripts de instalación de las dependencias salvo que se
+# autoricen uno por uno, y si encuentra uno sin autorizar falla la instalación
+# (ERR_PNPM_IGNORED_BUILDS). Es una buena defensa: un paquete comprometido
+# podría ejecutar código al instalarse. Estos dos están autorizados a propósito:
+#
+#   - esbuild: lo usa vitest para transformar los tests.
+#   - unrs-resolver: lo usa eslint-config-next para resolver importaciones.
+#
+# Si algún día la instalación pide autorizar otro, se revisa qué hace y se
+# agrega acá. Nunca se usa dangerouslyAllowAllBuilds.
+allowBuilds:
+  esbuild: true
+  unrs-resolver: true

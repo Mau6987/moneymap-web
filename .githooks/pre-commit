@@ -1,0 +1,62 @@
+#!/bin/sh
+# Hook local de pre-commit.
+#
+# Activar (una sola vez por clon):
+#   git config core.hooksPath .githooks
+# Saltear cuando haga falta:
+#   git commit --no-verify
+#
+# Hace dos cosas, y solo sobre los archivos que están en stage:
+#   1. Frena los archivos que no van al repositorio (secretos).
+#   2. Le da formato y pasa el lint arreglable a lo que se está por commitear.
+
+set -e
+
+staged=$(git diff --cached --name-only --diff-filter=ACM)
+
+# --- 1. Archivos prohibidos -------------------------------------------------
+forbidden=$(printf '%s\n' "$staged" | grep -E '(^|/)\.env$|(^|/)\.env\.local$|(^|/)\.env\..*\.local$' || true)
+if [ -n "$forbidden" ]; then
+  echo "pre-commit: estos archivos no van al repositorio:"
+  printf '%s\n' "$forbidden"
+  echo "si es un secreto, además de sacarlo hay que rotarlo."
+  exit 1
+fi
+
+# --- 2. Formato y lint de lo que se commitea -------------------------------
+if [ ! -x node_modules/.bin/prettier ]; then
+  echo "pre-commit: prettier no está instalado (falta pnpm install); se saltea el formato."
+  exit 0
+fi
+
+printf '%s\n' "$staged" | while IFS= read -r archivo; do
+  [ -n "$archivo" ] || continue
+  [ -f "$archivo" ] || continue
+
+  case "$archivo" in
+    *.ts|*.tsx|*.js|*.jsx|*.mjs|*.cjs|*.json|*.css|*.md|*.yml|*.yaml)
+      node_modules/.bin/prettier --write -- "$archivo"
+      git add -- "$archivo"
+      ;;
+  esac
+done
+
+if [ ! -x node_modules/.bin/eslint ]; then
+  echo "pre-commit: eslint no está instalado (falta pnpm install); se saltea el lint."
+  exit 0
+fi
+
+echo "pre-commit: eslint --fix"
+printf '%s\n' "$staged" | while IFS= read -r archivo; do
+  [ -n "$archivo" ] || continue
+  [ -f "$archivo" ] || continue
+
+  case "$archivo" in
+    *.ts|*.tsx|*.js|*.jsx|*.mjs|*.cjs)
+      node_modules/.bin/eslint --fix -- "$archivo" || exit 1
+      git add -- "$archivo"
+      ;;
+  esac
+done
+
+exit 0
